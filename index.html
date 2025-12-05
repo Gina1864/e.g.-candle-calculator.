@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Method B Candle Calculator</title>
+<style>
+  body { font-family: Arial; padding: 20px; background: #fff; color: #000; }
+  h2 { text-align: center; }
+  input, button, select { width: 100%; padding: 12px; font-size: 18px; margin-top: 10px; border-radius: 8px; border: 1px solid #ccc; }
+  button { background: black; color: white; border: none; }
+  .result { margin-top: 20px; font-size: 20px; }
+  .presets button { margin-top: 5px; }
+</style>
+</head>
+<body>
+
+<h2>Method B Candle Calculator</h2>
+
+<label>Final Candle Weight (oz):</label>
+<input id="total" type="number" step="0.01" placeholder="Enter finished candle weight">
+
+<label>Fragrance Load (%):</label>
+<input id="fragrance" type="number" step="0.1" placeholder="Enter fragrance % (optional)">
+
+<div class="presets">
+  <label>Quick Sizes:</label>
+  <button onclick="setPreset(1)">1 oz</button>
+  <button onclick="setPreset(2)">2 oz</button>
+  <button onclick="setPreset(4)">4 oz</button>
+  <button onclick="setPreset(8)">8 oz</button>
+  <button onclick="setPreset(12)">12 oz</button>
+  <button onclick="setPreset(16)">16 oz</button>
+  <button onclick="setPreset(32)">32 oz</button>
+  <button onclick="setPreset(64)">64 oz</button>
+</div>
+
+<button onclick="calc()">Calculate</button>
+
+<div class="result" id="output"></div>
+
+<script>
+function setPreset(value) {
+  document.getElementById('total').value = value;
+}
+
+function calc() {
+  let total = parseFloat(document.getElementById('total').value);
+  let fragrancePct = parseFloat(document.getElementById('fragrance').value) || 0;
+
+  if (isNaN(total) || total <= 0) {
+    document.getElementById('output').innerHTML = "Enter a valid weight.";
+    return;
+  }
+
+  let stearicPct = 0.035;
+  let vybarPct = 0.013;
+  let totalAdditivesPct = stearicPct + vybarPct + fragrancePct/100;
+
+  let wax = total / (1 + totalAdditivesPct);
+  let stearic = wax * stearicPct;
+  let vybar = wax * vybarPct;
+  let fragrance = wax * (fragrancePct/100);
+
+  document.getElementById('output').innerHTML =
+    "<b>Wax:</b> " + wax.toFixed(2) + " oz<br>" +
+    "<b>Stearic Acid (3.5%):</b> " + stearic.toFixed(2) + " oz<br>" +
+    "<b>Vybar (1.3%):</b> " + vybar.toFixed(2) + " oz<br>" +
+    (fragrancePct > 0 ? "<b>Fragrance (" + fragrancePct + "%):</b> " + fragrance.toFixed(2) + " oz<br>" : "") +
+    "<b>Total Finished Weight:</b> " + total.toFixed(2) + " oz";
+}
+</script>
+
+</body>
+</html>
